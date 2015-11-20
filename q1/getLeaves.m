@@ -9,6 +9,50 @@ function leaves = getLeaves(leaves, v, T, nsample)
 %       leaves: leavs in the subtree Tv rooted at v
 % Hint: you should implement this function recursively
 
+templeaves = visitnodes(v,T);
+% numpre = length(leaves);
+% numfound = nsample-numpre;
+for i = 1: length(templeaves)
+    if inpre(i, leaves)==0
+        leaves = [leaves, templeaves(i)];
+    end
+end        
+    
 
 
+end
+% find all leaves in tree T
+function leaves = visitnodes(v,T)
+leaves = [];
+children = [];
+for i=1:length(T{3})
+    if T{3}(i)==v
+        children=[children, i];
+    end
+end
+for i = 1:children
+    if checkleaves(children(i), T)==1;
+        leaves = [leaves, children(i)];
+    else
+        leaves = [leaves, visitnodes(children(i),T)];
+    end
+end
+end
+% check whether the node is leave
+function isleave = checkleaves(v,T)
+    if T{2}(v)==0
+        isleave=1;
+    else
+        isleave=0;
+    end
+end
+% check whether the node is previously found
+function isfound = inpre(v, leaves)
+    for i = 1:length(leaves)
+        if v==leaves(i)
+            isfound = 1;
+        else 
+            isfound = 0;
+        end
+    end
 end
