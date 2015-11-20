@@ -9,8 +9,28 @@ function L = assignLabels(L, u, v, T, nsample)
 %   Output:
 %       L: predicted label of each node
 % Hint: you should implement this function recursively
+rootlabel = L(v);
+children = [];
+children = visitnodes(v,T,children);
+for i = 1: length(children)
+    if (L(children(i))~=rootlabel)
+        L(children(i))=rootlabel;
+    end
+end
 
 
 
-
+end
+% get all the children of subtree
+function children = visitnodes(v,T,children)
+    for i=1:length(T{3})
+        if T{3}(i)==v
+            children=[children, i];
+        end
+    end
+    for i = 1:children
+        if (T{2}-1)>0
+            visitnodes(children(i),T,children)
+        end
+    end
 end
