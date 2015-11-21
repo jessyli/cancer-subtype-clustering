@@ -17,6 +17,35 @@ function [L,loss] = DH_SelectCase1(data, labels, T)
 %       label for ith sample.
 %       loss: a 1 by 1000 vector; ith element represents the loss after
 %       ith round querying
+L = [];
+P = [];
+for i = 1:length(T{3})
+    if T{3}(i)==0
+        root = i;
+    end
+end
+L(root)=1;
+P(0)=root;
+nsample = 1000;
 
-
+for t = 1:1000
+    v = randsample(P,1);
+    leaves = [];
+    n=0;
+    p1=0;
+    leaves = getLeaves(leaves, v, T, nsample);
+    z = randsample(leaves,1);
+    l = labels(z);
+    [n, p1] = updateEmpirical(n, p1, v, z, l, T);
+    [Pbest, Lbest] = chooseBestPruningAndLabeling(n, p1, v, T, nsample);
+    P = P(P~=v);
+    P = union(P,Pbest);
+    for u = 1:length(Pbest)
+        L(Pbest(u))= Lbest(Pbest(u));
+    end
+end
+loss = computeLoss(L, labels);
+for v = 1:length(P)
+    L = assignLabels(L, u, v, T, nsample);
+end
 end

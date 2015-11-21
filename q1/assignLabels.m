@@ -10,14 +10,21 @@ function L = assignLabels(L, u, v, T, nsample)
 %       L: predicted label of each node
 % Hint: you should implement this function recursively
 rootlabel = L(v);
-children = [];
-children = visitnodes(v,T,children);
-for i = 1: length(children)
-    if (L(children(i))~=rootlabel)
-        L(children(i))=rootlabel;
-    end
-end
 
+% children = [];
+% children = visitnodes(v,T,children);
+% for i = 1: length(children)
+%     if (L(children(i))~=rootlabel)
+%         L(children(i))=rootlabel;
+%     end
+% end
+leaves = [];
+leaves = getLeaves(leaves, v, T, nsample);
+for i = 1: length(leaves)
+     if (L(leaves(i))~=rootlabel)
+         L(leaves(i))=rootlabel;
+     end
+ end
 
 
 end
