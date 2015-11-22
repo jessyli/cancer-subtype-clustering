@@ -17,9 +17,69 @@ function [L,loss] = DH_SelectCase2(data, labels, T)
 %       label for ith sample.
 %       loss: a 1 by 1000 vector; ith element represents the loss after
 %       ith round querying
+L = zeros(1,1999);
+loss = [];
+root = 1999;
+L(root)=1;
+P=root;
+nsample = 1000;
+n=zeros(1,1999);
+p1=zeros(1,1999);
+    for t = 1:1000
+    %     children = [];
+    %     disp(class(children));
+        disp(t);
+    %     children = visitnodes(P,T,children);
+        
+        v = selectP(P,T,p1,n);
+        leaves = [];
+        
+        leaves = getLeaves(leaves, v, T, nsample);
+
+        z = leaves(randsample(length(leaves),1));
 
 
+        l = labels(z);
 
+        [n, p1] = updateEmpirical(n, p1, v, z, l, T);
+        [Pbest, Lbest] = chooseBestPruningAndLabeling(n, p1, v, T, nsample);
+        P = P(P~=v);
+        P = [P,Pbest];
+        L(Pbest)= Lbest;
+%         for u = 1:length(Pbest)
 
-
+        L = assignLabels(L, v, v, T, nsample);
+%         end
+        loss = [loss, computeLoss(L(1:1000), labels)];
+    %     for v = 1:length(P)
+    %         L = assignLabels(L, P(v), P(v), T, nsample);
+    %     end
+    end
 end
+function v = selectP(P,T,p1,n)
+    newP = P;
+%     rateP = [];
+%     for i = 1:length(newP)
+%         rateP(i)=T{2}(P(i));
+%         
+%     end
+    rateP = T{2}(P);
+    
+    
+    for i = 1:length(P)
+        a = 1/n(P(i));
+        b = p1(P(i))*(1-p1(P(i)));
+        c = p1(P(i))*(1-p1(P(i)))/n(P(i));
+        d = sqrt(p1(P(i))*(1-p1(P(i)))/n(P(i)));
+        delta = 1/n(P(i))+sqrt(p1(P(i))*(1-p1(P(i)))/n(P(i)));
+        pv = min(1, delta+p1(P(i)));
+
+        rateP(i) = rateP(i)*(1-pv);
+    end
+    [~,k] = max(mnrnd(1,rateP, 1));
+    v = P(k);
+end
+
+
+
+

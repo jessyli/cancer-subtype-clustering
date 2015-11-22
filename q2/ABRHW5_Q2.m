@@ -11,7 +11,7 @@ for(i=1:numExp)
     display(sprintf(' Mode = 2 ...'))
     [loss2] = RegressionModel(data,labels,2);
     tloss1 = tloss1+loss1;
-    tloss2 = tloss1+loss2;
+    tloss2 = tloss2+loss2;
 end
 tloss1=tloss1/numExp;
 tloss2=tloss2/numExp;
@@ -23,4 +23,3 @@ hold off
 xlabel('rounds')
 ylabel('mean absolute error');
 legend('Top 2','Diverse');
-

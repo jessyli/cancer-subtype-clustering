@@ -10,6 +10,8 @@ function [n, p1] = updateEmpirical(n, p1, v, z, l, T)
     % Output:
     %       n: updated number of points sampled in the subtree rooted at each node
     %       p1: updated fraction of label = 1 in the subtree rooted at each node
+    
+    
     while z <= v && z~=0
         l1 = n(z) * p1(z);
         n(z) = n(z) + 1;
